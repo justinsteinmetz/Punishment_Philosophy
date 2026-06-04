@@ -1,4 +1,6 @@
 https://justinsteinmetz.github.io/Punishment_Philosophy/
+https://justinsteinmetz.github.io/Punishment_Philosophy/punishment-philosophy-projection.html
+https://justinsteinmetz.github.io/Punishment_Philosophy/punishment-philosophy-projection-20min.html
 
 # Punishment & the State
 ### Interactive discussion tools for Year 10 Politics & Society
