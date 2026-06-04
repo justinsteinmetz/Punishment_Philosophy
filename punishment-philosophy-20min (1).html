@@ -1,0 +1,338 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Punishment &amp; the State — 20 min</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,500;0,700;1,500&family=Source+Serif+4:ital,wght@0,300;0,400;1,300;1,400&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --bg: #0e0d0b;
+    --bg-2: #181610;
+    --line: rgba(255,255,255,0.08);
+    --text: #f0ebe0;
+    --text-2: #a89e8a;
+    --text-3: #665e50;
+    --gold: #c9a84c;
+    --blue: #7fb3d3;
+    --blue-bg: rgba(127,179,211,0.08);
+    --amber: #d4a843;
+    --amber-bg: rgba(212,168,67,0.08);
+    --red: #c97070;
+    --red-bg: rgba(201,112,112,0.08);
+  }
+
+  html, body { width: 100%; height: 100%; overflow: hidden; background: var(--bg); color: var(--text); font-family: 'Source Serif 4', Georgia, serif; }
+
+  #deck { width: 100vw; height: 100vh; position: relative; }
+
+  .slide {
+    position: absolute; inset: 0;
+    display: flex; flex-direction: column; justify-content: center;
+    padding: 5vw 8vw;
+    opacity: 0; pointer-events: none;
+    transition: opacity 0.4s ease;
+  }
+  .slide.active { opacity: 1; pointer-events: all; }
+
+  /* Title */
+  .slide-title .eyebrow {
+    font-size: clamp(11px, 1.2vw, 14px); letter-spacing: 0.22em; text-transform: uppercase;
+    color: var(--gold); margin-bottom: 1.5rem;
+  }
+  .slide-title h1 {
+    font-family: 'Playfair Display', Georgia, serif;
+    font-size: clamp(42px, 7vw, 88px); font-weight: 700; line-height: 1.05;
+    color: var(--text); margin-bottom: 1.5rem;
+  }
+  .slide-title .opening-q {
+    font-size: clamp(16px, 2.2vw, 26px); font-weight: 300; font-style: italic;
+    color: var(--text-2); max-width: 38em; line-height: 1.55;
+    border-left: 2px solid var(--gold); padding-left: 1.5rem;
+  }
+
+  /* Theories */
+  .slide-theories h2 {
+    font-family: 'Playfair Display', Georgia, serif;
+    font-size: clamp(22px, 3vw, 38px); font-weight: 500; color: var(--text); margin-bottom: 0.5rem;
+  }
+  .slide-theories .sub {
+    font-size: clamp(13px, 1.4vw, 18px); color: var(--text-3); margin-bottom: 2.5rem; font-style: italic;
+  }
+  .theory-row { display: grid; grid-template-columns: repeat(4, 1fr); gap: 1.5vw; }
+  .t-block {
+    border: 1px solid var(--line); border-radius: 4px; padding: 2vw 2.2vw; background: var(--bg-2);
+    opacity: 0; transform: translateY(12px); transition: opacity 0.35s ease, transform 0.35s ease;
+  }
+  .t-block.revealed { opacity: 1; transform: translateY(0); }
+  .t-block:nth-child(1) { transition-delay: 0s; }
+  .t-block:nth-child(2) { transition-delay: 0.08s; }
+  .t-block:nth-child(3) { transition-delay: 0.16s; }
+  .t-block:nth-child(4) { transition-delay: 0.24s; }
+  .t-name {
+    font-family: 'Playfair Display', Georgia, serif;
+    font-size: clamp(15px, 1.8vw, 22px); font-weight: 500; color: var(--gold); margin-bottom: 0.5rem;
+  }
+  .t-core { font-size: clamp(13px, 1.5vw, 18px); font-weight: 300; color: var(--text-2); line-height: 1.55; margin-bottom: 0.6rem; }
+  .t-challenge { font-size: clamp(12px, 1.3vw, 16px); font-style: italic; color: var(--text-3); line-height: 1.5; }
+  .theory-footer {
+    margin-top: 1.8vw; font-size: clamp(13px, 1.5vw, 18px); font-style: italic;
+    color: var(--gold); opacity: 0; transition: opacity 0.6s ease; line-height: 1.6;
+  }
+  .theory-footer.revealed { opacity: 1; }
+
+  /* Compare */
+  .compare-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 2vw; margin-top: 0.5rem; }
+  .compare-col { border: 1px solid var(--line); border-radius: 4px; padding: 1.5vw 1.8vw; background: var(--bg-2); }
+  .compare-col.usa { border-top: 2px solid var(--red); }
+  .compare-col.nor { border-top: 2px solid var(--blue); }
+  .compare-country {
+    font-family: 'Playfair Display', Georgia, serif;
+    font-size: clamp(15px, 1.8vw, 22px); font-weight: 500; margin-bottom: 0.9rem;
+  }
+  .compare-col.usa .compare-country { color: var(--red); }
+  .compare-col.nor .compare-country { color: var(--blue); }
+  .compare-stat { font-size: clamp(12px, 1.4vw, 17px); font-weight: 300; color: var(--text-2); line-height: 1.5; padding: 0.5rem 0; border-bottom: 0.5px solid var(--line); }
+  .compare-stat:last-child { border-bottom: none; }
+  .compare-stat.dim { color: var(--text-3); font-style: italic; }
+
+  /* Scenario slides */
+  .scenario-slide .sc-eyebrow {
+    font-size: clamp(10px, 1.1vw, 13px); letter-spacing: 0.2em; text-transform: uppercase;
+    color: var(--text-3); margin-bottom: 1rem;
+  }
+  .scenario-slide h2 {
+    font-family: 'Playfair Display', Georgia, serif;
+    font-size: clamp(28px, 4.5vw, 58px); font-weight: 500; color: var(--text);
+    margin-bottom: 1.5rem; line-height: 1.1;
+  }
+  .sc-case {
+    font-size: clamp(15px, 2vw, 24px); font-weight: 300; font-style: italic;
+    color: var(--text-2); line-height: 1.65; max-width: 36em; margin-bottom: 2.5rem;
+    padding-left: 1.5rem; border-left: 2px solid var(--line);
+  }
+  .prompts-area { display: flex; flex-direction: column; gap: 0.8rem; max-width: 44em; }
+  .prompt {
+    font-size: clamp(14px, 1.85vw, 22px); font-weight: 300; line-height: 1.55;
+    padding: 0.8rem 1.2rem; border-left: 2px solid; border-radius: 0 3px 3px 0;
+    opacity: 0; transform: translateX(-8px); transition: opacity 0.3s ease, transform 0.3s ease;
+  }
+  .prompt.visible { opacity: 1; transform: translateX(0); }
+  .prompt.blue  { border-color: var(--blue);  background: var(--blue-bg);  color: var(--blue); }
+  .prompt.amber { border-color: var(--amber); background: var(--amber-bg); color: var(--amber); }
+  .prompt.red   { border-color: var(--red);   background: var(--red-bg);   color: var(--red); }
+
+  /* Final */
+  .slide-final { justify-content: center; align-items: center; text-align: center; }
+  .final-q {
+    font-family: 'Playfair Display', Georgia, serif;
+    font-size: clamp(32px, 6vw, 72px); font-weight: 500; font-style: italic;
+    color: var(--text); line-height: 1.2;
+  }
+
+  /* Controls */
+  #controls {
+    position: fixed; bottom: 2rem; right: 2.5rem;
+    display: flex; align-items: center; gap: 1rem; z-index: 100;
+  }
+  .ctrl-btn {
+    background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.12);
+    color: var(--text-2); font-family: 'Source Serif 4', serif; font-size: 13px;
+    padding: 8px 20px; border-radius: 3px; cursor: pointer;
+    transition: background 0.15s, color 0.15s; letter-spacing: 0.04em;
+  }
+  .ctrl-btn:hover { background: rgba(255,255,255,0.12); color: var(--text); }
+  .ctrl-btn:disabled { opacity: 0.25; cursor: default; }
+  #slide-info { font-size: 12px; color: var(--text-3); letter-spacing: 0.06em; min-width: 60px; text-align: center; }
+
+  #progress { position: fixed; bottom: 0; left: 0; height: 2px; background: var(--gold); transition: width 0.4s ease; }
+  #hint { position: fixed; bottom: 2rem; left: 2.5rem; font-size: 11px; letter-spacing: 0.1em; text-transform: uppercase; color: var(--text-3); opacity: 0.6; }
+
+  #fs-btn {
+    position: fixed; top: 1.5rem; right: 2rem;
+    background: transparent; border: none; color: var(--text-3); font-size: 13px;
+    cursor: pointer; letter-spacing: 0.08em; text-transform: uppercase;
+    font-family: 'Source Serif 4', serif; transition: color 0.15s;
+  }
+  #fs-btn:hover { color: var(--text-2); }
+
+  body::after {
+    content: ''; position: fixed; inset: 0;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.04'/%3E%3C/svg%3E");
+    pointer-events: none; opacity: 0.4; z-index: 50;
+  }
+</style>
+</head>
+<body>
+
+<button id="fs-btn" onclick="toggleFS()">⛶ fullscreen</button>
+<div id="progress"></div>
+<div id="hint">space / → to advance</div>
+
+<div id="deck">
+
+  <!-- 0: Title -->
+  <div class="slide slide-title active" data-prompts="0">
+    <h1>Punishment<br>&amp; the State</h1>
+    <p class="opening-q">Why should the state have the right to punish people — and what counts as a just punishment?</p>
+  </div>
+
+  <!-- 1: Four Theories -->
+  <div class="slide slide-theories" data-prompts="0">
+    <h2>Four theories of punishment</h2>
+    <p class="sub">Names for ideas you probably already have</p>
+    <div class="theory-row">
+      <div class="t-block">
+        <p class="t-name">Retribution</p>
+        <p class="t-core">You did wrong, so you deserve to suffer. Crime is a debt — and debts must be paid.</p>
+        <p class="t-challenge">But does suffering repair anything?</p>
+      </div>
+      <div class="t-block">
+        <p class="t-name">Deterrence</p>
+        <p class="t-core">Punish to stop others from doing the same. Law is calculated pain management for society.</p>
+        <p class="t-challenge">Most crimes aren't calculated.</p>
+      </div>
+      <div class="t-block">
+        <p class="t-name">Rehabilitation</p>
+        <p class="t-core">Crime is a symptom. Fix the cause — poverty, trauma, addiction — not just the act.</p>
+        <p class="t-challenge">Does the state have the right to 'fix' you?</p>
+      </div>
+      <div class="t-block">
+        <p class="t-name">Incapacitation</p>
+        <p class="t-core">Some people are dangerous. Remove them to protect everyone else. Safety first.</p>
+        <p class="t-challenge">Could justify detention before any crime.</p>
+      </div>
+    </div>
+    <p class="theory-footer">Most real systems use all four — the real question is <em>when each one should win.</em> &nbsp;Philosophers have argued about this for 2,500 years. They haven't agreed.</p>
+  </div>
+
+  <!-- 2: Shoplifter -->
+  <div class="slide scenario-slide" data-prompts="3">
+    <p class="sc-eyebrow">Scenario</p>
+    <h2>The shoplifter</h2>
+    <p class="sc-case">A single mother steals food from a supermarket to feed her children. She has no prior convictions. The supermarket wants to press charges.</p>
+    <div class="prompts-area">
+      <div class="prompt blue">Which theory of punishment would you apply here — and why?</div>
+      <div class="prompt amber">Does it matter whether she could have asked for help elsewhere?</div>
+      <div class="prompt red">Tax fraud can cost society millions. Shoplifting may cost a supermarket €20. Why does one often feel more criminal than the other?</div>
+    </div>
+  </div>
+
+  <!-- 3: US vs Norway -->
+  <div class="slide scenario-slide" data-prompts="1">
+    <p class="sc-eyebrow">The evidence</p>
+    <h2>Two systems.<br>Same goal.</h2>
+    <div class="compare-grid">
+      <div class="compare-col usa">
+        <p class="compare-country">United States</p>
+        <div class="compare-stat">2.1 million incarcerated — the highest rate in the world</div>
+        <div class="compare-stat">67% reoffend within 3 years of release</div>
+        <div class="compare-stat">Dominant logic: retribution + incapacitation</div>
+        <div class="compare-stat dim">Some states have private, for-profit prisons</div>
+      </div>
+      <div class="compare-col nor">
+        <p class="compare-country">Norway</p>
+        <div class="compare-stat">~4,000 incarcerated — one of the lowest rates in Europe</div>
+        <div class="compare-stat">20% reoffend within 2 years of release</div>
+        <div class="compare-stat">Dominant logic: rehabilitation</div>
+        <div class="compare-stat dim">Halden Prison has a recording studio, a climbing wall, and no bars on the windows</div>
+      </div>
+    </div>
+    <div class="prompts-area" style="margin-top:1.5rem;">
+      <div class="prompt blue">Same goal — less crime, safer society. Very different results. What does that tell you about which theory is right?</div>
+    </div>
+  </div>
+
+  <!-- 4: Big Question -->
+  <div class="slide scenario-slide" data-prompts="3">
+    <p class="sc-eyebrow">The big question</p>
+    <h2>Where does the<br>right to punish<br>come from?</h2>
+    <p class="sc-case">The state creates laws. Citizens break those laws. The state then punishes the law-breaker. Is this arrangement legitimate — and what makes it so?</p>
+    <div class="prompts-area">
+      <div class="prompt blue">Where does the state's authority to punish actually come from?</div>
+      <div class="prompt amber">Can a law be unjust — and if so, should breaking it still be punished?</div>
+      <div class="prompt red">If you never agreed to the social contract — you were born into it — why should the state have authority over you?</div>
+    </div>
+  </div>
+
+  <!-- 5: Final -->
+  <div class="slide slide-final" data-prompts="0">
+    <p class="final-q">What is punishment for?</p>
+  </div>
+
+</div>
+
+<div id="controls">
+  <button class="ctrl-btn" id="btn-prev" onclick="prev()" disabled>← back</button>
+  <span id="slide-info">1 / 6</span>
+  <button class="ctrl-btn" id="btn-next" onclick="next()">next →</button>
+</div>
+
+<script>
+  const slides = document.querySelectorAll('.slide');
+  const total = slides.length;
+  let cur = 0;
+
+  function revealTheories() {
+    const blocks = slides[cur].querySelectorAll('.t-block');
+    blocks.forEach((b, i) => setTimeout(() => b.classList.add('revealed'), i * 100));
+    const footer = slides[cur].querySelector('.theory-footer');
+    if (footer) setTimeout(() => footer.classList.add('revealed'), 800);
+  }
+
+  function goTo(i) {
+    slides[cur].classList.remove('active');
+    slides[cur].querySelectorAll('.prompt').forEach(p => p.classList.remove('visible'));
+    // reset theory cards too
+    slides[cur].querySelectorAll('.t-block').forEach(b => b.classList.remove('revealed'));
+    const tf = slides[cur].querySelector('.theory-footer');
+    if (tf) tf.classList.remove('revealed');
+    cur = i;
+    slides[cur].classList.add('active');
+    if (slides[cur].classList.contains('slide-theories')) setTimeout(revealTheories, 200);
+    updateUI();
+  }
+
+  function next() {
+    const prompts = slides[cur].querySelectorAll('.prompt');
+    const shown = slides[cur].querySelectorAll('.prompt.visible').length;
+    if (shown < prompts.length) { prompts[shown].classList.add('visible'); return; }
+    if (cur < total - 1) goTo(cur + 1);
+  }
+
+  function prev() {
+    const visible = slides[cur].querySelectorAll('.prompt.visible');
+    if (visible.length > 0) { visible[visible.length - 1].classList.remove('visible'); return; }
+    if (cur > 0) goTo(cur - 1);
+  }
+
+  function updateUI() {
+    document.getElementById('slide-info').textContent = (cur + 1) + ' / ' + total;
+    document.getElementById('btn-prev').disabled = cur === 0;
+    document.getElementById('btn-next').disabled = false;
+    document.getElementById('progress').style.width = ((cur / (total - 1)) * 100) + '%';
+  }
+
+  document.addEventListener('keydown', e => {
+    if (e.key === 'ArrowRight' || e.key === ' ' || e.key === 'ArrowDown') { e.preventDefault(); next(); }
+    if (e.key === 'ArrowLeft' || e.key === 'ArrowUp') { e.preventDefault(); prev(); }
+  });
+
+  function toggleFS() {
+    if (!document.fullscreenElement) {
+      document.documentElement.requestFullscreen();
+      document.getElementById('fs-btn').textContent = '✕ exit fullscreen';
+    } else {
+      document.exitFullscreen();
+      document.getElementById('fs-btn').textContent = '⛶ fullscreen';
+    }
+  }
+
+  updateUI();
+</script>
+</body>
+</html>

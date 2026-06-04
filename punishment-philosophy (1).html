@@ -1,0 +1,560 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Punishment &amp; the State — Year 10 Politics</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,500;0,600;0,700;1,500&family=Source+Serif+4:ital,wght@0,300;0,400;1,300;1,400&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --ink: #1a1714;
+    --ink-2: #4a4540;
+    --ink-3: #8a837c;
+    --ink-4: #b8b0a5;
+    --paper: #f5f0e8;
+    --paper-2: #ede7d8;
+    --paper-3: #e3dcc8;
+    --paper-4: #d8d0bc;
+    --rule: rgba(26,23,20,0.12);
+    --rule-strong: rgba(26,23,20,0.22);
+    --accent: #8b2e0f;
+    --accent-light: #f7eeea;
+    --blue: #1a3d5c;
+    --blue-light: #e8eef4;
+    --amber: #7a4f10;
+    --amber-light: #faf0dc;
+    --red: #7a1a1a;
+    --red-light: #faeaea;
+    --green: #1a4a2a;
+    --green-light: #e8f4ec;
+  }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    font-family: 'Source Serif 4', Georgia, serif;
+    background: var(--paper);
+    color: var(--ink);
+    min-height: 100vh;
+    font-size: 16px;
+    line-height: 1.7;
+  }
+
+  /* Header */
+  header {
+    border-bottom: 1px solid var(--rule);
+    padding: 3.5rem 2rem 2.5rem;
+    max-width: 800px;
+    margin: 0 auto;
+  }
+
+  .kicker {
+    font-size: 11px;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--ink-3);
+    margin-bottom: 0.75rem;
+  }
+
+  h1 {
+    font-family: 'Playfair Display', Georgia, serif;
+    font-size: clamp(30px, 5vw, 52px);
+    font-weight: 700;
+    line-height: 1.1;
+    color: var(--ink);
+    margin-bottom: 1rem;
+  }
+
+  .subtitle {
+    font-size: 18px;
+    font-weight: 300;
+    font-style: italic;
+    color: var(--ink-2);
+    max-width: 520px;
+    line-height: 1.6;
+    border-left: 2px solid var(--accent);
+    padding-left: 1.25rem;
+  }
+
+  /* Main */
+  main {
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 2.5rem 2rem 5rem;
+  }
+
+  section { margin-bottom: 3.5rem; }
+
+  .section-label {
+    font-size: 10px;
+    letter-spacing: 0.22em;
+    text-transform: uppercase;
+    color: var(--ink-4);
+    margin-bottom: 1.25rem;
+    padding-bottom: 0.5rem;
+    border-bottom: 0.5px solid var(--rule);
+  }
+
+  /* Theory grid */
+  .theory-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(168px, 1fr));
+    gap: 10px;
+    margin-bottom: 1rem;
+  }
+
+  .theory-card {
+    background: var(--paper-2);
+    border: 1px solid var(--rule);
+    border-radius: 3px;
+    padding: 1.1rem 1.25rem;
+    cursor: pointer;
+    transition: background 0.15s, border-color 0.15s;
+    user-select: none;
+  }
+
+  .theory-card:hover { background: var(--paper-3); border-color: var(--rule-strong); }
+
+  .theory-card.active {
+    background: var(--accent-light);
+    border: 1.5px solid var(--accent);
+  }
+
+  .t-name {
+    font-family: 'Playfair Display', Georgia, serif;
+    font-size: 15px;
+    font-weight: 500;
+    color: var(--ink);
+    margin-bottom: 5px;
+  }
+
+  .theory-card.active .t-name { color: var(--accent); }
+
+  .t-core {
+    font-size: 13px;
+    font-weight: 300;
+    color: var(--ink-2);
+    line-height: 1.5;
+    margin-bottom: 8px;
+  }
+
+  .t-badge {
+    display: inline-block;
+    font-size: 10px;
+    letter-spacing: 0.07em;
+    text-transform: uppercase;
+    padding: 2px 7px;
+    background: var(--paper-3);
+    color: var(--ink-3);
+    border-radius: 2px;
+  }
+
+  .theory-card.active .t-badge {
+    background: rgba(139,46,15,0.1);
+    color: var(--accent);
+  }
+
+  /* Theory detail panel */
+  .theory-detail {
+    display: none;
+    border-left: 3px solid var(--accent);
+    background: var(--paper-2);
+    padding: 1.25rem 1.5rem;
+    border-radius: 0 3px 3px 0;
+    margin-bottom: 1rem;
+    animation: fadeSlide 0.2s ease;
+  }
+
+  .theory-detail.visible { display: block; }
+
+  @keyframes fadeSlide {
+    from { opacity: 0; transform: translateY(-5px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+
+  .detail-text {
+    font-size: 15px;
+    font-weight: 300;
+    color: var(--ink-2);
+    line-height: 1.75;
+    margin-bottom: 0.6rem;
+  }
+
+  .detail-challenge {
+    font-size: 14px;
+    font-style: italic;
+    color: var(--ink-3);
+    margin-bottom: 1rem;
+  }
+
+  /* Theory footer note */
+  .theory-note {
+    font-size: 14px;
+    font-style: italic;
+    color: var(--ink-3);
+    padding: 0.75rem 0 0.25rem;
+    line-height: 1.6;
+  }
+
+  /* Prompt cards */
+  .prompt-card {
+    padding: 0.75rem 1rem;
+    margin-bottom: 0.5rem;
+    border-left: 2.5px solid;
+    font-size: 14px;
+    font-weight: 300;
+    line-height: 1.6;
+  }
+
+  .prompt-card.blue  { border-color: var(--blue);  background: var(--blue-light);  color: var(--blue); }
+  .prompt-card.amber { border-color: var(--amber); background: var(--amber-light); color: var(--amber); }
+  .prompt-card.red   { border-color: var(--red);   background: var(--red-light);   color: var(--red); }
+
+  hr {
+    border: none;
+    border-top: 1px solid var(--rule);
+    margin: 2.5rem 0;
+  }
+
+  /* Compare grid */
+  .compare-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+    margin-bottom: 1.25rem;
+  }
+
+  .compare-col {
+    background: var(--paper-2);
+    border: 1px solid var(--rule);
+    border-radius: 3px;
+    padding: 1.1rem 1.25rem;
+  }
+
+  .compare-col.usa { border-top: 2.5px solid var(--red); }
+  .compare-col.nor { border-top: 2.5px solid var(--blue); }
+
+  .compare-country {
+    font-family: 'Playfair Display', Georgia, serif;
+    font-size: 15px;
+    font-weight: 500;
+    margin-bottom: 0.75rem;
+  }
+
+  .compare-col.usa .compare-country { color: var(--red); }
+  .compare-col.nor .compare-country { color: var(--blue); }
+
+  .compare-stat {
+    font-size: 13px;
+    font-weight: 300;
+    color: var(--ink-2);
+    line-height: 1.5;
+    padding: 0.45rem 0;
+    border-bottom: 0.5px solid var(--rule);
+  }
+
+  .compare-stat:last-child { border-bottom: none; }
+  .compare-stat.dim { color: var(--ink-3); font-style: italic; }
+
+  /* Scenario */
+  .scenario { margin-bottom: 2.5rem; }
+
+  .sc-header {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 1rem;
+    margin-bottom: 0.75rem;
+  }
+
+  .sc-title {
+    font-family: 'Playfair Display', Georgia, serif;
+    font-size: 20px;
+    font-weight: 500;
+    color: var(--ink);
+  }
+
+  .sc-number {
+    font-size: 11px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--ink-4);
+    white-space: nowrap;
+  }
+
+  .sc-case {
+    font-size: 15px;
+    font-weight: 300;
+    font-style: italic;
+    color: var(--ink-2);
+    line-height: 1.75;
+    background: var(--paper-2);
+    border: 1px solid var(--rule);
+    border-radius: 3px;
+    padding: 1rem 1.25rem;
+    margin-bottom: 0.75rem;
+  }
+
+  /* Final question */
+  .final-question {
+    padding: 3rem 0 1rem;
+    border-top: 1px solid var(--rule);
+    margin-top: 1rem;
+  }
+
+  .final-question p {
+    font-family: 'Playfair Display', Georgia, serif;
+    font-size: clamp(24px, 4vw, 40px);
+    font-weight: 500;
+    font-style: italic;
+    color: var(--ink);
+    line-height: 1.2;
+  }
+
+  /* Footer */
+  footer {
+    border-top: 1px solid var(--rule);
+    padding: 1.5rem 2rem;
+    max-width: 800px;
+    margin: 0 auto;
+    display: flex;
+    justify-content: space-between;
+    font-size: 12px;
+    color: var(--ink-4);
+    letter-spacing: 0.04em;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+  }
+
+  @media (max-width: 520px) {
+    header, main, footer { padding-left: 1.25rem; padding-right: 1.25rem; }
+    h1 { font-size: 28px; }
+    .theory-grid { grid-template-columns: 1fr 1fr; }
+    .compare-grid { grid-template-columns: 1fr; }
+    .sc-header { flex-direction: column; gap: 0.25rem; }
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <p class="kicker">Year 10 · Politics &amp; Society · Discussion Tool</p>
+  <h1>Punishment &amp; the State</h1>
+  <p class="subtitle">Why should the state have the right to punish people — and what counts as a just punishment?</p>
+</header>
+
+<main>
+
+  <!-- Theories -->
+  <section>
+    <p class="section-label">Four theories of punishment — click any to explore</p>
+
+    <div class="theory-grid" id="theory-grid">
+      <div class="theory-card" onclick="selectTheory(0)" tabindex="0">
+        <p class="t-name">Retribution</p>
+        <p class="t-core">You did wrong, so you deserve to suffer.</p>
+        <span class="t-badge">backwards-looking</span>
+      </div>
+      <div class="theory-card" onclick="selectTheory(1)" tabindex="0">
+        <p class="t-name">Deterrence</p>
+        <p class="t-core">Punish to stop others from doing the same.</p>
+        <span class="t-badge">consequences</span>
+      </div>
+      <div class="theory-card" onclick="selectTheory(2)" tabindex="0">
+        <p class="t-name">Rehabilitation</p>
+        <p class="t-core">Change the person so they don't reoffend.</p>
+        <span class="t-badge">forward-looking</span>
+      </div>
+      <div class="theory-card" onclick="selectTheory(3)" tabindex="0">
+        <p class="t-name">Incapacitation</p>
+        <p class="t-core">Remove them so they can't harm anyone.</p>
+        <span class="t-badge">public safety</span>
+      </div>
+    </div>
+
+    <div class="theory-detail" id="theory-detail"></div>
+
+    <p class="theory-note">Most real systems use all four — the real question is <em>when each one should win.</em> Philosophers have argued about this for 2,500 years. They haven't agreed.</p>
+  </section>
+
+  <hr>
+
+  <!-- Scenarios -->
+  <section>
+    <p class="section-label">Discussion scenarios</p>
+
+    <!-- Scenario 1 -->
+    <div class="scenario">
+      <div class="sc-header">
+        <span class="sc-title">The shoplifter</span>
+        <span class="sc-number">Scenario 1</span>
+      </div>
+      <p class="sc-case">A single mother steals food from a supermarket to feed her children. She has no prior convictions. The supermarket wants to press charges.</p>
+      <div class="prompt-card blue">Which theory of punishment would you apply here — and why?</div>
+      <div class="prompt-card amber">Does it matter whether she could have asked for help elsewhere?</div>
+      <div class="prompt-card red">If you let her go unpunished, what message does that send?</div>
+      <div class="prompt-card amber">Tax fraud can cost society millions. Shoplifting may cost a supermarket €20. Why does one often feel more criminal than the other?</div>
+    </div>
+
+    <!-- Evidence: US vs Norway -->
+    <div class="scenario">
+      <div class="sc-header">
+        <span class="sc-title">Two systems. Same goal.</span>
+        <span class="sc-number">The evidence</span>
+      </div>
+      <div class="compare-grid">
+        <div class="compare-col usa">
+          <p class="compare-country">United States</p>
+          <div class="compare-stat">2.1 million incarcerated — the highest rate in the world</div>
+          <div class="compare-stat">67% reoffend within 3 years of release</div>
+          <div class="compare-stat">Dominant logic: retribution + incapacitation</div>
+          <div class="compare-stat dim">Some states have private, for-profit prisons</div>
+        </div>
+        <div class="compare-col nor">
+          <p class="compare-country">Norway</p>
+          <div class="compare-stat">~4,000 incarcerated — one of the lowest rates in Europe</div>
+          <div class="compare-stat">20% reoffend within 2 years of release</div>
+          <div class="compare-stat">Dominant logic: rehabilitation</div>
+          <div class="compare-stat dim">Halden Prison has a recording studio, a climbing wall, and no bars on the windows</div>
+        </div>
+      </div>
+      <div class="prompt-card blue">Same goal — less crime, safer society. Very different results. What does that tell you about which theory is right?</div>
+      <div class="prompt-card amber" style="margin-top:0.5rem;">If rehabilitation works better, should justice matter less? If a victim wants punishment but rehabilitation reduces crime more effectively, whose interests should come first?</div>
+    </div>
+
+    <!-- Scenario 2 -->
+    <div class="scenario">
+      <div class="sc-header">
+        <span class="sc-title">The recidivist</span>
+        <span class="sc-number">Scenario 2</span>
+      </div>
+      <p class="sc-case">A man has been convicted of assault three times and served his full sentence each time. He has just been arrested for a fourth assault.</p>
+      <div class="prompt-card blue">Has punishment clearly failed here — or is this proof we need more of it?</div>
+      <div class="prompt-card amber">Should the state be allowed to imprison him indefinitely after his fourth sentence, even before he offends again?</div>
+    </div>
+
+    <!-- Scenario 3 -->
+    <div class="scenario">
+      <div class="sc-header">
+        <span class="sc-title">The extremist</span>
+        <span class="sc-number">Scenario 3</span>
+      </div>
+      <p class="sc-case">A 19-year-old was radicalised online and joined a violent protest that injured several police officers. He claims he now deeply regrets what he did.</p>
+      <div class="prompt-card blue">Do you punish the ideology, the action, or the person — or all three?</div>
+      <div class="prompt-card amber">Does genuine remorse change how much punishment is deserved?</div>
+      <div class="prompt-card red">Who decides if the remorse is real?</div>
+    </div>
+
+    <!-- Scenario 4 -->
+    <div class="scenario">
+      <div class="sc-header">
+        <span class="sc-title">The state's limits</span>
+        <span class="sc-number">Scenario 4</span>
+      </div>
+      <p class="sc-case">Some countries still use corporal punishment — caning, flogging — or the death penalty. They argue it is effective and culturally appropriate.</p>
+      <div class="prompt-card blue">Does the state have the right to physically harm someone as punishment?</div>
+      <div class="prompt-card red">Is there a point at which punishment becomes torture — and who decides where that line is?</div>
+    </div>
+
+    <!-- Scenario 5: Billionaire -->
+    <div class="scenario">
+      <div class="sc-header">
+        <span class="sc-title">The billionaire</span>
+        <span class="sc-number">Scenario 5</span>
+      </div>
+      <p class="sc-case">A billionaire deliberately evades taxes, costing the state millions. Nobody is physically harmed. He receives a fine equivalent to 0.5% of his total wealth.</p>
+      <div class="prompt-card blue">Is this punishment?</div>
+      <div class="prompt-card amber">If punishment barely affects the offender, has justice been done?</div>
+      <div class="prompt-card red">Should punishment depend on wealth — or should everyone face the same consequences?</div>
+    </div>
+
+    <!-- Big question -->
+    <div class="scenario">
+      <div class="sc-header">
+        <span class="sc-title">Where does the right to punish come from?</span>
+        <span class="sc-number">The big question</span>
+      </div>
+      <p class="sc-case">The state creates laws. Citizens break those laws. The state then punishes the law-breaker. Is this arrangement legitimate — and what makes it so?</p>
+      <div class="prompt-card blue">Where does the state's authority to punish actually come from?</div>
+      <div class="prompt-card amber">Can a law be unjust — and if so, should breaking it still be punished?</div>
+      <div class="prompt-card red">If the law itself is wrong (e.g. apartheid-era South Africa), does resistance become legitimate?</div>
+      <div class="prompt-card red">If you never agreed to the social contract — you were born into it — why should the state have authority over you?</div>
+    </div>
+
+  </section>
+
+  <!-- Final question -->
+  <div class="final-question">
+    <p>What is punishment for?</p>
+  </div>
+
+</main>
+
+<footer>
+  <span>Deutsche Schule Prag · English Department</span>
+  <span>justinsteinmetz.github.io</span>
+</footer>
+
+<script>
+const theories = [
+  {
+    name: "Retribution",
+    detail: "The oldest justification. You broke the social contract — you owe a proportional debt. Kant argued it's the only morally honest reason to punish: suffering is deserved, not merely useful.",
+    challenge: "But does making someone suffer actually repair anything?",
+    prompts: [
+      { type: "blue",  text: "If a crime caused no victim — if nothing wrong was done to a person — should it still be punished?" },
+      { type: "amber", text: "Kant said even if society were about to dissolve, the last murderer must still be executed. Do you agree?" }
+    ]
+  },
+  {
+    name: "Deterrence",
+    detail: "Punishment sends a message. If consequences are bad enough, rational people won't offend. Bentham said law is just calculated pain management for society's benefit — nothing more, nothing less.",
+    challenge: "Most crimes aren't calculated. Does deterrence actually work?",
+    prompts: [
+      { type: "blue", text: "If harsher sentences don't actually reduce crime, do we still have a reason to use them?" },
+      { type: "red",  text: "Could deterrence logic justify punishing an innocent person — if it would 'send the right message'?" }
+    ]
+  },
+  {
+    name: "Rehabilitation",
+    detail: "Crime is often a symptom — of poverty, trauma, addiction. The state's job is to fix the cause, not inflict pain. Scandinavian prison systems are largely built on this model, with dramatically lower reoffending rates.",
+    challenge: "What if someone refuses rehabilitation? Does the state have the right to 'fix' you?",
+    prompts: [
+      { type: "blue",  text: "Is a short sentence that successfully rehabilitates better than a long one that doesn't — even for a serious crime?" },
+      { type: "amber", text: "Does focusing on rehabilitation feel like the criminal 'gets away with it' to victims?" }
+    ]
+  },
+  {
+    name: "Incapacitation",
+    detail: "Some people are simply dangerous. We separate them to protect the public — like quarantining an infectious disease. It's not primarily about justice or reform; it's about keeping everyone else safe.",
+    challenge: "This logic could justify permanent detention before any crime is committed.",
+    prompts: [
+      { type: "blue", text: "Should someone be kept in prison after serving their sentence if they're still considered dangerous?" },
+      { type: "red",  text: "Does incapacitation treat people as objects to be managed rather than humans with rights?" }
+    ]
+  }
+];
+
+function selectTheory(i) {
+  document.querySelectorAll('.theory-card').forEach((c, j) => c.classList.toggle('active', j === i));
+  const t = theories[i];
+  const panel = document.getElementById('theory-detail');
+  panel.classList.add('visible');
+  panel.innerHTML =
+    '<p class="detail-text">' + t.detail + '</p>' +
+    '<p class="detail-challenge">' + t.challenge + '</p>' +
+    t.prompts.map(p => '<div class="prompt-card ' + p.type + '">' + p.text + '</div>').join('');
+}
+
+document.querySelectorAll('.theory-card').forEach((card, i) => {
+  card.addEventListener('keydown', e => {
+    if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); selectTheory(i); }
+  });
+});
+</script>
+</body>
+</html>
