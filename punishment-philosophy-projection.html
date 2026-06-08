@@ -36,7 +36,6 @@
     font-family: 'Source Serif 4', Georgia, serif;
   }
 
-  /* Slide container */
   #deck {
     width: 100vw;
     height: 100vh;
@@ -60,7 +59,7 @@
     pointer-events: all;
   }
 
-  /* Slide: title */
+  /* Title slide */
   .slide-title .eyebrow {
     font-size: clamp(11px, 1.2vw, 14px);
     letter-spacing: 0.22em;
@@ -89,7 +88,7 @@
     padding-left: 1.5rem;
   }
 
-  /* Slide: theories */
+  /* Theories slide */
   .slide-theories h2 {
     font-family: 'Playfair Display', Georgia, serif;
     font-size: clamp(22px, 3vw, 38px);
@@ -111,6 +110,7 @@
     gap: 1.5vw;
   }
 
+  /* t-blocks now hidden by default, revealed step-by-step like prompts */
   .t-block {
     border: 1px solid var(--line);
     border-radius: 4px;
@@ -119,17 +119,14 @@
     opacity: 0;
     transform: translateY(12px);
     transition: opacity 0.35s ease, transform 0.35s ease;
+    pointer-events: none;
   }
 
   .t-block.revealed {
     opacity: 1;
     transform: translateY(0);
+    pointer-events: auto;
   }
-
-  .t-block:nth-child(1) { transition-delay: 0s; }
-  .t-block:nth-child(2) { transition-delay: 0.08s; }
-  .t-block:nth-child(3) { transition-delay: 0.16s; }
-  .t-block:nth-child(4) { transition-delay: 0.24s; }
 
   .t-block .t-name {
     font-family: 'Playfair Display', Georgia, serif;
@@ -160,13 +157,15 @@
     font-style: italic;
     color: var(--gold);
     opacity: 0;
-    transition: opacity 0.6s ease 1.2s;
+    transition: opacity 0.5s ease;
     line-height: 1.6;
   }
 
   .theory-footer.revealed {
     opacity: 1;
   }
+
+  /* Compare grid */
   .compare-grid {
     display: grid;
     grid-template-columns: 1fr 1fr;
@@ -206,6 +205,7 @@
   .compare-stat:last-child { border-bottom: none; }
   .compare-stat.dim { color: var(--text-3); font-style: italic; }
 
+  /* Scenario slides */
   .scenario-slide .sc-eyebrow {
     font-size: clamp(10px, 1.1vw, 13px);
     letter-spacing: 0.2em;
@@ -314,7 +314,6 @@
     text-align: center;
   }
 
-  /* Progress bar */
   #progress {
     position: fixed;
     bottom: 0;
@@ -324,7 +323,6 @@
     transition: width 0.4s ease;
   }
 
-  /* Hint */
   #hint {
     position: fixed;
     bottom: 2rem;
@@ -336,7 +334,6 @@
     opacity: 0.6;
   }
 
-  /* Fullscreen button */
   #fs-btn {
     position: fixed;
     top: 1.5rem;
@@ -353,7 +350,6 @@
   }
   #fs-btn:hover { color: var(--text-2); }
 
-  /* Grain overlay */
   body::after {
     content: '';
     position: fixed;
@@ -380,8 +376,8 @@
     <p class="opening-q">Why should the state have the right to punish people — and what counts as a just punishment?</p>
   </div>
 
-  <!-- Slide 1: Four Theories -->
-  <div class="slide slide-theories" data-prompts="0">
+  <!-- Slide 1: Four Theories — cards revealed one by one; footer = 5th step -->
+  <div class="slide slide-theories" data-prompts="0" data-steps="5">
     <h2>Four theories of punishment</h2>
     <p class="sub">Names for ideas you probably already have</p>
     <div class="theory-row">
@@ -422,7 +418,7 @@
     </div>
   </div>
 
-  <!-- Slide 3b: US vs Scandinavia -->
+  <!-- Slide 3: US vs Norway -->
   <div class="slide scenario-slide" data-prompts="1">
     <p class="sc-eyebrow">The evidence</p>
     <h2>Two systems.<br>Same goal.</h2>
@@ -458,7 +454,7 @@
     </div>
   </div>
 
-  <!-- Slide 4: Scenario 3 -->
+  <!-- Slide 5: Scenario 3 -->
   <div class="slide scenario-slide" data-prompts="3">
     <p class="sc-eyebrow">Scenario 3</p>
     <h2>The extremist</h2>
@@ -470,7 +466,7 @@
     </div>
   </div>
 
-  <!-- Slide 5: Scenario 4 -->
+  <!-- Slide 6: Scenario 4 -->
   <div class="slide scenario-slide" data-prompts="2">
     <p class="sc-eyebrow">Scenario 4</p>
     <h2>The state's limits</h2>
@@ -481,7 +477,7 @@
     </div>
   </div>
 
-  <!-- Slide 5b: The Billionaire -->
+  <!-- Slide 7: Scenario 5 -->
   <div class="slide scenario-slide" data-prompts="3">
     <p class="sc-eyebrow">Scenario 5</p>
     <h2>The billionaire</h2>
@@ -493,10 +489,7 @@
     </div>
   </div>
 
-  <!-- Slide 10: Final blank -->
-  <!-- inserted after big question below -->
-
-  <!-- Slide 6: Big Question -->
+  <!-- Slide 8: Big Question -->
   <div class="slide scenario-slide" data-prompts="4">
     <p class="sc-eyebrow">The big question</p>
     <h2>Where does the<br>right to punish<br>come from?</h2>
@@ -509,7 +502,7 @@
     </div>
   </div>
 
-  <!-- Slide 11: Final question -->
+  <!-- Slide 9: Final -->
   <div class="slide slide-final" data-prompts="0">
     <p class="final-q">What is punishment for?</p>
   </div>
@@ -518,7 +511,7 @@
 
 <div id="controls">
   <button class="ctrl-btn" id="btn-prev" onclick="prev()" disabled>← back</button>
-  <span id="slide-info">1 / 7</span>
+  <span id="slide-info">1 / 10</span>
   <button class="ctrl-btn" id="btn-next" onclick="next()">next →</button>
 </div>
 
@@ -526,65 +519,69 @@
   const slides = document.querySelectorAll('.slide');
   const total = slides.length;
   let cur = 0;
-  let promptIndex = 0;
 
-  function getPromptCount() {
-    return parseInt(slides[cur].dataset.prompts) || 0;
+  // Returns the steppable elements on the current slide in order:
+  // .t-block elements first (theories slide), then .prompt elements,
+  // then .theory-footer (theories slide). The footer appears after all 4 cards.
+  function getSteps(slideEl) {
+    const steps = [];
+    const blocks = slideEl.querySelectorAll('.t-block');
+    const prompts = slideEl.querySelectorAll('.prompt');
+    const footer = slideEl.querySelector('.theory-footer');
+    blocks.forEach(b => steps.push({ el: b, cls: 'revealed' }));
+    prompts.forEach(p => steps.push({ el: p, cls: 'visible' }));
+    if (footer) steps.push({ el: footer, cls: 'revealed' });
+    return steps;
   }
 
-  function getVisiblePrompts() {
-    return slides[cur].querySelectorAll('.prompt.visible').length;
+  function shownCount(slideEl) {
+    return getSteps(slideEl).filter(s => s.el.classList.contains(s.cls)).length;
   }
 
-  function showNextPrompt() {
-    const prompts = slides[cur].querySelectorAll('.prompt');
-    const shown = slides[cur].querySelectorAll('.prompt.visible').length;
-    if (shown < prompts.length) {
-      prompts[shown].classList.add('visible');
+  function showNext(slideEl) {
+    const steps = getSteps(slideEl);
+    const shown = shownCount(slideEl);
+    if (shown < steps.length) {
+      steps[shown].el.classList.add(steps[shown].cls);
       return true;
     }
     return false;
   }
 
-  function revealTheories() {
-    const blocks = slides[cur].querySelectorAll('.t-block');
-    blocks.forEach((b, i) => setTimeout(() => b.classList.add('revealed'), i * 100));
-    const footer = slides[cur].querySelector('.theory-footer');
-    if (footer) setTimeout(() => footer.classList.add('revealed'), 800);
+  function hideLast(slideEl) {
+    const steps = getSteps(slideEl);
+    const shown = shownCount(slideEl);
+    if (shown > 0) {
+      const s = steps[shown - 1];
+      s.el.classList.remove(s.cls);
+      return true;
+    }
+    return false;
+  }
+
+  function resetSlide(slideEl) {
+    getSteps(slideEl).forEach(s => s.el.classList.remove(s.cls));
   }
 
   function goTo(i) {
+    resetSlide(slides[cur]);
     slides[cur].classList.remove('active');
-    // reset prompts on leaving
-    slides[cur].querySelectorAll('.prompt').forEach(p => p.classList.remove('visible'));
     cur = i;
     slides[cur].classList.add('active');
-    promptIndex = 0;
-
-    // auto-reveal theories slide
-    if (slides[cur].classList.contains('slide-theories')) {
-      setTimeout(revealTheories, 200);
-    }
-
     updateUI();
   }
 
   function next() {
-    // If current slide has prompts left, reveal next one
-    const prompts = slides[cur].querySelectorAll('.prompt');
-    const shown = slides[cur].querySelectorAll('.prompt.visible').length;
-    if (shown < prompts.length) {
-      showNextPrompt();
+    if (showNext(slides[cur])) {
+      updateUI();
       return;
     }
     if (cur < total - 1) goTo(cur + 1);
   }
 
   function prev() {
-    // If prompts are showing, hide last one first
-    const visible = slides[cur].querySelectorAll('.prompt.visible');
-    if (visible.length > 0) {
-      visible[visible.length - 1].classList.remove('visible');
+    if (hideLast(slides[cur])) {
+      updateUI();
       return;
     }
     if (cur > 0) goTo(cur - 1);
@@ -592,12 +589,12 @@
 
   function updateUI() {
     document.getElementById('slide-info').textContent = (cur + 1) + ' / ' + total;
-    document.getElementById('btn-prev').disabled = cur === 0;
-    document.getElementById('btn-next').disabled = cur === total - 1 && slides[cur].querySelectorAll('.prompt.visible').length === slides[cur].querySelectorAll('.prompt').length;
+    document.getElementById('btn-prev').disabled = cur === 0 && shownCount(slides[cur]) === 0;
+    const atEnd = cur === total - 1 && shownCount(slides[cur]) === getSteps(slides[cur]).length;
+    document.getElementById('btn-next').disabled = atEnd;
     document.getElementById('progress').style.width = ((cur / (total - 1)) * 100) + '%';
   }
 
-  // Keyboard
   document.addEventListener('keydown', e => {
     if (e.key === 'ArrowRight' || e.key === ' ' || e.key === 'ArrowDown') { e.preventDefault(); next(); }
     if (e.key === 'ArrowLeft' || e.key === 'ArrowUp') { e.preventDefault(); prev(); }
