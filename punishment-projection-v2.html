@@ -129,6 +129,14 @@
     font-weight: 300;
     color: var(--text-2);
     line-height: 1.55;
+    opacity: 0;
+    transform: translateY(8px);
+    transition: opacity 0.35s ease, transform 0.35s ease;
+  }
+
+  .t-block .t-core.revealed {
+    opacity: 1;
+    transform: translateY(0);
   }
 
   .theory-footer {
@@ -601,12 +609,16 @@
   const total = slides.length;
   let cur = 0;
 
-  // Step order on each slide: theory cards → vote → prompts → footer.
-  // The vote always appears before the prompts so the commitment happens
-  // before any framing is visible.
+  // Step order on each slide: theory card name → its definition → next card …
+  // then vote → prompts → footer. The vote always appears before the prompts
+  // so the commitment happens before any framing is visible.
   function getSteps(slideEl) {
     const steps = [];
-    slideEl.querySelectorAll('.t-block').forEach(b => steps.push({ el: b, cls: 'revealed' }));
+    slideEl.querySelectorAll('.t-block').forEach(b => {
+      steps.push({ el: b, cls: 'revealed' });
+      const core = b.querySelector('.t-core');
+      if (core) steps.push({ el: core, cls: 'revealed' });
+    });
     slideEl.querySelectorAll('.vote, .prompt').forEach(p => steps.push({ el: p, cls: 'visible' }));
     const footer = slideEl.querySelector('.theory-footer');
     if (footer) steps.push({ el: footer, cls: 'revealed' });
