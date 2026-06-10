@@ -1,0 +1,689 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Punishment &amp; the State — Projection</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,500;0,700;1,500&family=Source+Serif+4:ital,wght@0,300;0,400;1,300;1,400&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --bg: #0e0d0b;
+    --bg-2: #181610;
+    --bg-3: #222018;
+    --line: rgba(255,255,255,0.08);
+    --text: #f0ebe0;
+    --text-2: #a89e8a;
+    --text-3: #665e50;
+    --gold: #c9a84c;
+    --gold-dim: rgba(201,168,76,0.15);
+    --blue: #7fb3d3;
+    --blue-bg: rgba(127,179,211,0.08);
+    --amber: #d4a843;
+    --amber-bg: rgba(212,168,67,0.08);
+    --red: #c97070;
+    --red-bg: rgba(201,112,112,0.08);
+  }
+
+  html, body {
+    width: 100%; height: 100%;
+    overflow: hidden;
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'Source Serif 4', Georgia, serif;
+  }
+
+  #deck { width: 100vw; height: 100vh; position: relative; }
+
+  .slide {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    padding: 4vw 7vw;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.4s ease;
+  }
+
+  .slide.active { opacity: 1; pointer-events: all; }
+
+  /* ── Title slide ── */
+  .slide-title .eyebrow {
+    font-size: clamp(15px, 1.6vw, 20px);
+    letter-spacing: 0.22em;
+    text-transform: uppercase;
+    color: var(--gold);
+    margin-bottom: 1.5rem;
+  }
+
+  .slide-title h1 {
+    font-family: 'Playfair Display', Georgia, serif;
+    font-size: clamp(56px, 9vw, 110px);
+    font-weight: 700;
+    line-height: 1.05;
+    color: var(--text);
+    margin-bottom: 1.5rem;
+  }
+
+  .slide-title .opening-q {
+    font-size: clamp(22px, 2.8vw, 34px);
+    font-weight: 300;
+    font-style: italic;
+    color: var(--text-2);
+    max-width: 36em;
+    line-height: 1.5;
+    border-left: 2px solid var(--gold);
+    padding-left: 1.5rem;
+  }
+
+  /* ── Theories slide ── */
+  .slide-theories h2 {
+    font-family: 'Playfair Display', Georgia, serif;
+    font-size: clamp(28px, 3.5vw, 46px);
+    font-weight: 500;
+    color: var(--text);
+    margin-bottom: 0.4rem;
+  }
+
+  .slide-theories .sub {
+    font-size: clamp(16px, 1.7vw, 22px);
+    color: var(--text-3);
+    margin-bottom: 2rem;
+    font-style: italic;
+  }
+
+  .theory-row {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 1.4vw;
+  }
+
+  .t-block {
+    border: 1px solid var(--line);
+    border-radius: 4px;
+    padding: 1.8vw 2vw;
+    background: var(--bg-2);
+    opacity: 0;
+    transform: translateY(12px);
+    transition: opacity 0.35s ease, transform 0.35s ease;
+    pointer-events: none;
+  }
+
+  .t-block.revealed { opacity: 1; transform: translateY(0); pointer-events: auto; }
+
+  .t-block .t-name {
+    font-family: 'Playfair Display', Georgia, serif;
+    font-size: clamp(18px, 2.1vw, 28px);
+    font-weight: 500;
+    color: var(--gold);
+    margin-bottom: 0.5rem;
+  }
+
+  .t-block .t-core {
+    font-size: clamp(15px, 1.7vw, 22px);
+    font-weight: 300;
+    color: var(--text-2);
+    line-height: 1.55;
+  }
+
+  .theory-footer {
+    margin-top: 1.6vw;
+    font-size: clamp(16px, 1.8vw, 23px);
+    font-style: italic;
+    color: var(--gold);
+    opacity: 0;
+    transition: opacity 0.5s ease;
+    line-height: 1.6;
+  }
+
+  .theory-footer.revealed { opacity: 1; }
+
+  /* ── Compare grid ── */
+  .compare-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 2vw;
+    margin-top: 0.5rem;
+  }
+
+  .compare-col {
+    border: 1px solid var(--line);
+    border-radius: 4px;
+    padding: 1.5vw 1.8vw;
+    background: var(--bg-2);
+  }
+
+  .compare-col.usa { border-top: 2px solid var(--red); }
+  .compare-col.nor { border-top: 2px solid var(--blue); }
+
+  .compare-country {
+    font-family: 'Playfair Display', Georgia, serif;
+    font-size: clamp(18px, 2.1vw, 27px);
+    font-weight: 500;
+    margin-bottom: 0.9rem;
+  }
+
+  .compare-col.usa .compare-country { color: var(--red); }
+  .compare-col.nor .compare-country { color: var(--blue); }
+
+  .compare-stat {
+    font-size: clamp(15px, 1.7vw, 22px);
+    font-weight: 300;
+    color: var(--text-2);
+    line-height: 1.5;
+    padding: 0.5rem 0;
+    border-bottom: 0.5px solid var(--line);
+  }
+
+  .compare-stat:last-child { border-bottom: none; }
+  .compare-stat.dim { color: var(--text-3); font-style: italic; }
+
+  /* ── Scenario slides ── */
+  .scenario-slide .sc-eyebrow {
+    font-size: clamp(13px, 1.4vw, 17px);
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--text-3);
+    margin-bottom: 0.8rem;
+  }
+
+  .scenario-slide h2 {
+    font-family: 'Playfair Display', Georgia, serif;
+    font-size: clamp(34px, 5.5vw, 68px);
+    font-weight: 500;
+    color: var(--text);
+    margin-bottom: 1.2rem;
+    line-height: 1.1;
+  }
+
+  .sc-case {
+    font-size: clamp(18px, 2.3vw, 29px);
+    font-weight: 300;
+    font-style: italic;
+    color: var(--text-2);
+    line-height: 1.6;
+    max-width: 36em;
+    margin-bottom: 2rem;
+    padding-left: 1.5rem;
+    border-left: 2px solid var(--line);
+  }
+
+  .prompts-area {
+    display: flex;
+    flex-direction: column;
+    gap: 0.7rem;
+    max-width: 44em;
+  }
+
+  /* ── Vote element ── */
+  .vote {
+    border: 1.5px solid var(--gold);
+    background: var(--gold-dim);
+    border-radius: 4px;
+    padding: 1rem 1.4rem;
+    opacity: 0;
+    transform: translateX(-8px);
+    transition: opacity 0.3s ease, transform 0.3s ease;
+  }
+
+  .vote.visible { opacity: 1; transform: translateX(0); }
+
+  .vote .vote-label {
+    font-size: clamp(12px, 1.3vw, 15px);
+    letter-spacing: 0.25em;
+    text-transform: uppercase;
+    color: var(--gold);
+    margin-bottom: 0.4rem;
+  }
+
+  .vote .vote-q {
+    font-size: clamp(19px, 2.3vw, 29px);
+    font-weight: 400;
+    color: var(--text);
+    line-height: 1.45;
+  }
+
+  .prompt {
+    font-size: clamp(17px, 2.1vw, 26px);
+    font-weight: 300;
+    line-height: 1.5;
+    padding: 0.75rem 1.2rem;
+    border-left: 2px solid;
+    border-radius: 0 3px 3px 0;
+    opacity: 0;
+    transform: translateX(-8px);
+    transition: opacity 0.3s ease, transform 0.3s ease;
+  }
+
+  .prompt.visible { opacity: 1; transform: translateX(0); }
+
+  .prompt.blue  { border-color: var(--blue);  background: var(--blue-bg);  color: var(--blue); }
+  .prompt.amber { border-color: var(--amber); background: var(--amber-bg); color: var(--amber); }
+  .prompt.red   { border-color: var(--red);   background: var(--red-bg);   color: var(--red); }
+  .prompt.gold  { border-color: var(--gold);  background: var(--gold-dim); color: var(--gold); }
+
+  /* ── Reckoning slide ── */
+  .slide-reckoning h2 {
+    font-family: 'Playfair Display', Georgia, serif;
+    font-size: clamp(34px, 5.5vw, 68px);
+    font-weight: 500;
+    color: var(--text);
+    margin-bottom: 1.5rem;
+    line-height: 1.1;
+  }
+
+  .reckon-pair {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 2vw;
+    margin-bottom: 2rem;
+    max-width: 60em;
+  }
+
+  .reckon-card {
+    border: 1px solid var(--line);
+    border-radius: 4px;
+    padding: 1.4vw 1.8vw;
+    background: var(--bg-2);
+  }
+
+  .reckon-card .rk-who {
+    font-family: 'Playfair Display', Georgia, serif;
+    font-size: clamp(17px, 2vw, 26px);
+    font-weight: 500;
+    color: var(--gold);
+    margin-bottom: 0.5rem;
+  }
+
+  .reckon-card .rk-what {
+    font-size: clamp(15px, 1.7vw, 22px);
+    font-weight: 300;
+    font-style: italic;
+    color: var(--text-2);
+    line-height: 1.55;
+  }
+
+  /* ── Final slide ── */
+  .slide-final {
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+  }
+
+  .final-q {
+    font-family: 'Playfair Display', Georgia, serif;
+    font-size: clamp(42px, 8vw, 90px);
+    font-weight: 500;
+    font-style: italic;
+    color: var(--text);
+    line-height: 1.2;
+  }
+
+  /* ── Controls ── */
+  #controls {
+    position: fixed;
+    bottom: 2rem;
+    right: 2.5rem;
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    z-index: 100;
+  }
+
+  .ctrl-btn {
+    background: rgba(255,255,255,0.06);
+    border: 1px solid rgba(255,255,255,0.12);
+    color: var(--text-2);
+    font-family: 'Source Serif 4', serif;
+    font-size: 14px;
+    padding: 9px 22px;
+    border-radius: 3px;
+    cursor: pointer;
+    transition: background 0.15s, color 0.15s;
+    letter-spacing: 0.04em;
+  }
+
+  .ctrl-btn:hover { background: rgba(255,255,255,0.12); color: var(--text); }
+  .ctrl-btn:disabled { opacity: 0.25; cursor: default; }
+
+  #slide-info {
+    font-size: 13px;
+    color: var(--text-3);
+    letter-spacing: 0.06em;
+    min-width: 60px;
+    text-align: center;
+  }
+
+  #progress {
+    position: fixed;
+    bottom: 0; left: 0;
+    height: 2px;
+    background: var(--gold);
+    transition: width 0.4s ease;
+  }
+
+  #hint {
+    position: fixed;
+    bottom: 2rem; left: 2.5rem;
+    font-size: 12px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--text-3);
+    opacity: 0.6;
+  }
+
+  #fs-btn {
+    position: fixed;
+    top: 1.5rem; right: 2rem;
+    background: transparent;
+    border: none;
+    color: var(--text-3);
+    font-size: 14px;
+    cursor: pointer;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    font-family: 'Source Serif 4', serif;
+    transition: color 0.15s;
+  }
+  #fs-btn:hover { color: var(--text-2); }
+
+  body::after {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.04'/%3E%3C/svg%3E");
+    pointer-events: none;
+    opacity: 0.4;
+    z-index: 50;
+  }
+</style>
+</head>
+<body>
+
+<button id="fs-btn" onclick="toggleFS()">⛶ fullscreen</button>
+<div id="progress"></div>
+<div id="hint">space / → to advance</div>
+
+<div id="deck">
+
+  <!-- Slide 0: Title -->
+  <div class="slide slide-title active">
+    <p class="eyebrow">Year 10 · Politics &amp; Society</p>
+    <h1>Punishment<br>&amp; the State</h1>
+    <p class="opening-q">Why should the state have the right to punish people — and what counts as a just punishment?</p>
+  </div>
+
+  <!-- Slide 1: Four Theories — challenges removed; flaw hunt added -->
+  <div class="slide slide-theories">
+    <h2>Four theories of punishment</h2>
+    <p class="sub">Names for ideas you probably already have</p>
+    <div class="theory-row">
+      <div class="t-block">
+        <p class="t-name">Retribution</p>
+        <p class="t-core">You did wrong, so you deserve to suffer. Crime is a debt — and debts must be paid.</p>
+      </div>
+      <div class="t-block">
+        <p class="t-name">Deterrence</p>
+        <p class="t-core">Punish to stop others from doing the same. Law is calculated pain management for society.</p>
+      </div>
+      <div class="t-block">
+        <p class="t-name">Rehabilitation</p>
+        <p class="t-core">Crime is a symptom. Fix the cause — poverty, trauma, addiction — not just the act.</p>
+      </div>
+      <div class="t-block">
+        <p class="t-name">Incapacitation</p>
+        <p class="t-core">Some people are dangerous. Remove them to protect everyone else. Safety first.</p>
+      </div>
+    </div>
+    <div class="prompts-area" style="margin-top:1.6vw; max-width:none;">
+      <div class="prompt gold">One of these theories has a fatal flaw. Find it. Be ready to defend your choice.</div>
+    </div>
+    <p class="theory-footer">Philosophers have argued about this for 2,500 years. They haven't agreed. You have four minutes.</p>
+  </div>
+
+  <!-- Slide 2: Scenario 1 — vote first -->
+  <div class="slide scenario-slide">
+    <p class="sc-eyebrow">Scenario 1</p>
+    <h2>The shoplifter</h2>
+    <p class="sc-case">A single mother steals food from a supermarket to feed her children. She has no prior convictions. The supermarket wants to press charges.</p>
+    <div class="prompts-area">
+      <div class="vote">
+        <p class="vote-label">Vote — hands up, no abstaining</p>
+        <p class="vote-q">Should she face criminal charges? Yes or no. Commit.</p>
+      </div>
+      <div class="prompt blue">Minority — convince the majority. Majority — you may only respond to their arguments, not repeat your own.</div>
+      <div class="prompt red">If you voted no: a 16-year-old steals trainers because his family can't afford them. Same vote?</div>
+      <div class="prompt amber">If you voted yes: what exactly is the punishment supposed to achieve? Name the theory you're using.</div>
+    </div>
+  </div>
+
+  <!-- Slide 3: US vs Norway -->
+  <div class="slide scenario-slide">
+    <p class="sc-eyebrow">The evidence</p>
+    <h2>Two systems.<br>Same goal.</h2>
+    <div class="compare-grid">
+      <div class="compare-col usa">
+        <p class="compare-country">United States</p>
+        <div class="compare-stat">2.1 million incarcerated — the highest rate in the world</div>
+        <div class="compare-stat">67% reoffend within 3 years of release</div>
+        <div class="compare-stat">Dominant logic: retribution + incapacitation</div>
+        <div class="compare-stat dim">Some states have private, for-profit prisons</div>
+      </div>
+      <div class="compare-col nor">
+        <p class="compare-country">Norway</p>
+        <div class="compare-stat">~4,000 incarcerated — one of the lowest rates in Europe</div>
+        <div class="compare-stat">20% reoffend within 2 years of release</div>
+        <div class="compare-stat">Dominant logic: rehabilitation</div>
+        <div class="compare-stat dim">Halden Prison has a recording studio, a climbing wall, and no bars on the windows</div>
+      </div>
+    </div>
+    <div class="prompts-area" style="margin-top:1.5rem;">
+      <div class="vote">
+        <p class="vote-label">Vote — hands up, no abstaining</p>
+        <p class="vote-q">A man who assaulted someone gets a cell with a recording studio. Is that justice? Yes or no.</p>
+      </div>
+      <div class="prompt red">If you said no: Norway's system produces fewer victims. Are you choosing your feelings over other people's safety?</div>
+    </div>
+  </div>
+
+  <!-- Slide 4: Scenario 2 -->
+  <div class="slide scenario-slide">
+    <p class="sc-eyebrow">Scenario 2</p>
+    <h2>The recidivist</h2>
+    <p class="sc-case">A man has been convicted of assault three times and served his full sentence each time. He has just been arrested for a fourth assault.</p>
+    <div class="prompts-area">
+      <div class="vote">
+        <p class="vote-label">Vote — hands up, no abstaining</p>
+        <p class="vote-q">After this sentence, should the state be allowed to keep him in detention indefinitely? Yes or no.</p>
+      </div>
+      <div class="prompt amber">Everyone who voted yes: you've just endorsed imprisoning someone for a crime he hasn't committed. Defend that.</div>
+      <div class="prompt amber">Everyone who voted no: his next victim is in this room. Still no?</div>
+    </div>
+  </div>
+
+  <!-- Slide 5: Scenario 3 -->
+  <div class="slide scenario-slide">
+    <p class="sc-eyebrow">Scenario 3</p>
+    <h2>The extremist</h2>
+    <p class="sc-case">A 19-year-old was radicalised online and joined a violent protest that injured several police officers. He claims he now deeply regrets what he did.</p>
+    <div class="prompts-area">
+      <div class="vote">
+        <p class="vote-label">Vote — hands up, no abstaining</p>
+        <p class="vote-q">Should his remorse reduce his sentence? Yes or no.</p>
+      </div>
+      <div class="prompt blue">Who decides if the remorse is real? Describe the test you'd use — then ask whether you could fake it.</div>
+      <div class="prompt red">He was radicalised at 17, online, by adults. How much of this crime belongs to him?</div>
+    </div>
+  </div>
+
+  <!-- Slide 6: Scenario 4 -->
+  <div class="slide scenario-slide">
+    <p class="sc-eyebrow">Scenario 4</p>
+    <h2>The state's limits</h2>
+    <p class="sc-case">Some countries still use corporal punishment — caning, flogging — or the death penalty. They argue it is effective and culturally appropriate.</p>
+    <div class="prompts-area">
+      <div class="vote">
+        <p class="vote-label">Vote — hands up, no abstaining</p>
+        <p class="vote-q">Is a ten-second caning more cruel than ten years in a cell? Caning or cell.</p>
+      </div>
+      <div class="prompt red">Most of you chose the cell as less cruel. The prisoner might not. Whose definition of cruelty counts?</div>
+    </div>
+  </div>
+
+  <!-- Slide 7: Scenario 5 -->
+  <div class="slide scenario-slide">
+    <p class="sc-eyebrow">Scenario 5</p>
+    <h2>The billionaire</h2>
+    <p class="sc-case">A billionaire deliberately evades taxes, costing the state millions. Nobody is physically harmed. He receives a fine equivalent to 0.5% of his total wealth.</p>
+    <div class="prompts-area">
+      <div class="vote">
+        <p class="vote-label">Vote — hands up, no abstaining</p>
+        <p class="vote-q">Was justice done? Yes or no.</p>
+      </div>
+      <div class="prompt amber">He took millions from schools and hospitals. The shoplifter took €20 of food. Which courtroom is busier — and why?</div>
+      <div class="prompt red">If you said the fine isn't real punishment: what would be? Say the number out loud.</div>
+    </div>
+  </div>
+
+  <!-- Slide 8: The Reckoning — students' own votes become the text -->
+  <div class="slide slide-reckoning scenario-slide">
+    <p class="sc-eyebrow">Your own votes</p>
+    <h2>The reckoning</h2>
+    <div class="reckon-pair">
+      <div class="reckon-card">
+        <p class="rk-who">The shoplifter</p>
+        <p class="rk-what">You voted on whether a mother who stole €20 of food should be charged.</p>
+      </div>
+      <div class="reckon-card">
+        <p class="rk-who">The billionaire</p>
+        <p class="rk-what">You voted on whether a fine of 0.5% was justice for stealing millions.</p>
+      </div>
+    </div>
+    <div class="prompts-area">
+      <div class="prompt gold">Look at your two votes. Are they consistent? Defend both — or drop one.</div>
+      <div class="prompt red">If your answer is "but they're different cases" — different how? Finish the sentence: "Stealing is worse when..."</div>
+    </div>
+  </div>
+
+  <!-- Slide 9: Big Question -->
+  <div class="slide scenario-slide">
+    <p class="sc-eyebrow">The big question</p>
+    <h2>Where does the<br>right to punish<br>come from?</h2>
+    <p class="sc-case">The state creates laws. Citizens break those laws. The state then punishes the law-breaker. Is this arrangement legitimate — and what makes it so?</p>
+    <div class="prompts-area">
+      <div class="prompt blue">Where does the state's authority to punish actually come from?</div>
+      <div class="prompt amber">Can a law be unjust — and if so, should breaking it still be punished?</div>
+      <div class="prompt red">If the law itself is wrong (e.g. apartheid-era South Africa), does resistance become legitimate?</div>
+      <div class="prompt red">If you never agreed to the social contract — you were born into it — why should the state have authority over you?</div>
+    </div>
+  </div>
+
+  <!-- Slide 10: Final -->
+  <div class="slide slide-final">
+    <p class="final-q">What is punishment for?</p>
+  </div>
+
+</div>
+
+<div id="controls">
+  <button class="ctrl-btn" id="btn-prev" onclick="prev()" disabled>← back</button>
+  <span id="slide-info">1 / 11</span>
+  <button class="ctrl-btn" id="btn-next" onclick="next()">next →</button>
+</div>
+
+<script>
+  const slides = document.querySelectorAll('.slide');
+  const total = slides.length;
+  let cur = 0;
+
+  // Step order on each slide: theory cards → vote → prompts → footer.
+  // The vote always appears before the prompts so the commitment happens
+  // before any framing is visible.
+  function getSteps(slideEl) {
+    const steps = [];
+    slideEl.querySelectorAll('.t-block').forEach(b => steps.push({ el: b, cls: 'revealed' }));
+    slideEl.querySelectorAll('.vote, .prompt').forEach(p => steps.push({ el: p, cls: 'visible' }));
+    const footer = slideEl.querySelector('.theory-footer');
+    if (footer) steps.push({ el: footer, cls: 'revealed' });
+    return steps;
+  }
+
+  function shownCount(slideEl) {
+    return getSteps(slideEl).filter(s => s.el.classList.contains(s.cls)).length;
+  }
+
+  function showNext(slideEl) {
+    const steps = getSteps(slideEl);
+    const shown = shownCount(slideEl);
+    if (shown < steps.length) {
+      steps[shown].el.classList.add(steps[shown].cls);
+      return true;
+    }
+    return false;
+  }
+
+  function hideLast(slideEl) {
+    const steps = getSteps(slideEl);
+    const shown = shownCount(slideEl);
+    if (shown > 0) {
+      const s = steps[shown - 1];
+      s.el.classList.remove(s.cls);
+      return true;
+    }
+    return false;
+  }
+
+  function resetSlide(slideEl) {
+    getSteps(slideEl).forEach(s => s.el.classList.remove(s.cls));
+  }
+
+  function goTo(i) {
+    resetSlide(slides[cur]);
+    slides[cur].classList.remove('active');
+    cur = i;
+    slides[cur].classList.add('active');
+    updateUI();
+  }
+
+  function next() {
+    if (showNext(slides[cur])) { updateUI(); return; }
+    if (cur < total - 1) goTo(cur + 1);
+  }
+
+  function prev() {
+    if (hideLast(slides[cur])) { updateUI(); return; }
+    if (cur > 0) goTo(cur - 1);
+  }
+
+  function updateUI() {
+    document.getElementById('slide-info').textContent = (cur + 1) + ' / ' + total;
+    document.getElementById('btn-prev').disabled = cur === 0 && shownCount(slides[cur]) === 0;
+    const atEnd = cur === total - 1 && shownCount(slides[cur]) === getSteps(slides[cur]).length;
+    document.getElementById('btn-next').disabled = atEnd;
+    document.getElementById('progress').style.width = ((cur / (total - 1)) * 100) + '%';
+  }
+
+  document.addEventListener('keydown', e => {
+    if (e.key === 'ArrowRight' || e.key === ' ' || e.key === 'ArrowDown') { e.preventDefault(); next(); }
+    if (e.key === 'ArrowLeft' || e.key === 'ArrowUp') { e.preventDefault(); prev(); }
+  });
+
+  function toggleFS() {
+    if (!document.fullscreenElement) {
+      document.documentElement.requestFullscreen();
+      document.getElementById('fs-btn').textContent = '✕ exit fullscreen';
+    } else {
+      document.exitFullscreen();
+      document.getElementById('fs-btn').textContent = '⛶ fullscreen';
+    }
+  }
+
+  updateUI();
+</script>
+</body>
+</html>
